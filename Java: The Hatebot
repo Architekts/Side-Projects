@@ -1,0 +1,26 @@
+package projects;
+
+import java.util.Scanner;
+
+public class Hater {
+
+	public static void main(String[] args) {
+
+		Scanner input = new Scanner(System.in);
+
+		System.out.print("[BOT] Enter the name of the person you hate: ");
+		
+		String name = input.nextLine();
+				
+				
+		System.out.printf("[BOT] Man, I really hate " + name + " too.");
+		
+		System.out.println();
+		
+		
+		System.out.print("[BOT] Wait, why do you hate that person? ");
+		String reason = input.nextLine();
+		
+		System.out.printf("[BOT] " + reason + ", huh? Yeah I guess that's a reason to be mad at them. LOL!");
+	}
+}
