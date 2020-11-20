@@ -1,0 +1,204 @@
+-- This is the main file incase i need to find it for some reason
+
+local Currency = "Dollars"
+Bid = script.PlayerBid
+
+-- variables
+local PC = script.PlayerCards
+local PCC = 0
+
+local HC = script.HouseCards
+local HCC = 0
+
+local PCGUI = script.Parent.BillboardGui.Player
+local HCGUI = script.Parent.BillboardGui.House
+
+-- cards will change
+
+
+housebust = false
+playerbust = false
+playerBJ = false
+houseBJ = false
+housestand = false
+began = false
+
+cardcountPLR = 0
+cardcountHOUSE = 0
+
+
+-- Player will add their bid
+function AddBid(player)
+	if player.leaderstats:findFirstChild(Currency) ~= nil and script.Parent.Parent.Biddable.Value == true then
+		local cash = player.leaderstats:findFirstChild(Currency)
+		if cash.Value >= 20 then
+			cash.Value = cash.Value - 20
+			Bid.Value = Bid.Value + 20
+			script.Parent.BillboardGui.Bid.Text = "Player's Bid: $" .. Bid.Value
+		else
+		end
+	end
+end
+
+
+-- Player starts the game
+function Begin(player)
+	if script.Parent.Parent.Biddable.Value == true then
+		script.Parent.Parent.Biddable.Value = false
+		script.Parent.BillboardGui.Infobid.Visible = false
+		began = true
+		
+		local gencard = math.random(1,11)
+		local gencard2 = math.random(1,11)
+		PC.Value = PC.Value + gencard
+		HC.Value = HC.Value + gencard2
+		
+		local gencard = math.random(1,11)
+		
+		PC.Value = PC.Value + gencard
+		
+		
+		PCGUI.Text = "Player Card Value: " .. PC.Value
+		HCGUI.Text = "House Card Value: " .. HC.Value
+	else
+		
+	end
+end
+
+
+
+
+-- Player HIT
+
+function PlayerHit(player)
+	
+
+	local cashie = player.leaderstats:findFirstChild(Currency)
+	
+	if housebust == false 
+		and began == true
+		and playerbust == false 
+		and playerBJ == false 
+		and houseBJ == false 
+		and PC.Value < 21 then
+		
+		local gencardo = math.random(1,11)
+		
+		PC.Value = PC.Value + gencardo
+		PCGUI.Text = "Player Card Value: " .. PC.Value
+
+
+			if PC.Value > 21 then
+			PCGUI.Text = "Player Busted. Game Over."
+			wait(2)
+			RestartGame()
+		else	
+			if PC.Value == 21 then
+				PCGUI.Text = "BLACKJACK!"
+				cashie.Value = cashie.Value + Bid.Value * 2
+				wait(2)
+				RestartGame()
+			end
+		end
+	end
+end
+
+
+
+function PlayerStand(player)
+	
+	local cashie = player.leaderstats:findFirstChild(Currency)
+	
+	while housestand == false 
+		and began == true 
+		and HC.Value < 17
+		do
+		
+		local gencard2 = math.random(1,11)
+		HC.Value = HC.Value + gencard2
+		HCGUI.Text = "House Card Value: " .. HC.Value
+		
+		wait(0.5)
+		if HC.Value == PC.Value and HC.Value >= 17 then
+			PCGUI.Text = "Push"
+			cashie.Value = cashie.Value + Bid.Value 
+			HCGUI.Text = "Push"
+			wait(2)
+			RestartGame()
+			else
+	
+			if HC.Value > 21  then
+				PCGUI.Text = "Player WON with a: " .. PC.Value
+				cashie.Value = cashie.Value + Bid.Value * 2
+				HCGUI.Text = "House BUSTED with a: " .. HC.Value
+				wait(2)
+				RestartGame()
+			else
+				if HC.Value > PC.Value and HC.Value >= 17 then
+					PCGUI.Text = "Player LOST with a: " .. PC.Value
+					HCGUI.Text = "House WON with a: " .. HC.Value
+					wait(2)
+					RestartGame()
+				else
+				end
+			end
+		end
+	end
+	
+		
+	if HC.Value < PC.Value and PC.Value <= 21 and HC.Value  >= 17 then
+						PCGUI.Text = "Player WON with a: " .. PC.Value
+						HCGUI.Text = "House LOST with a: " .. HC.Value
+						cashie.Value = cashie.Value + Bid.Value * 2
+						wait(2)
+						RestartGame()
+					else
+			
+			end
+		end
+
+
+			
+	
+
+function RestartGame(player)
+	if script.Parent.Parent.Biddable.Value == false
+		and began == true then
+		
+		script.Parent.Parent.Biddable.Value = true	
+		HC.Value = 0
+		PC.Value = 0
+		PCC = 0
+		HCC = 0
+		Bid.Value = 0
+		
+		housebust = false
+		began = false
+		playerbust = false
+		playerBJ = false
+		houseBJ = false
+		housestand = false
+		
+		PCGUI.Text = "Player Card Value: " .. PC.Value
+		HCGUI.Text = "House Card Value: " .. HC.Value
+		script.Parent.BillboardGui.Bid.Text = "Player's Bid: $" .. Bid.Value
+		
+	else
+		
+	end
+end
+	
+
+	
+
+
+
+
+	
+script.Parent.Parent.Restart.ClickDetector.MouseClick:Connect(RestartGame)	
+script.Parent.ClickDetector.MouseClick:connect(AddBid)
+script.Parent.Parent.Start.ClickDetector.MouseClick:Connect(Begin)
+script.Parent.Parent.Hit.ClickDetector.MouseClick:Connect(PlayerHit)
+script.Parent.Parent.Stand.ClickDetector.MouseClick:Connect(PlayerStand)
+	
+-- note: dealer holds on 17
