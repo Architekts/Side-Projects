@@ -1,0 +1,22 @@
+count = 0
+positive = 0
+negative = 0
+
+while count < 25 do
+  roll = math.random(-200, 200)
+  print(roll)
+
+  if roll > 0 then
+    positive  = positive + 1
+  else
+    negative = negative + 1
+  end
+  
+  count = count + 1
+
+end
+
+if count == 25 then
+  print(positive.. " = heads")
+  print(negative.. " = tails")
+end
